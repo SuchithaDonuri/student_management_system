@@ -17,36 +17,52 @@ teacher_features=TeacherFeatures()
 
 
 
+while True:
+    role=input("enter the role (principal/teacher/student/parent) : ").lower()
 
-role=input("enter the role (principal/teacher/student/parent) : ")
+    if role not in ["principal", "teacher", "student", "parent"]:
+        print("Invalid role! Try again.")
+        continue
+    break
+
+
+
 user_id=input("enter the user id: ")
 password=input("enter the password: ")
+
 
 
 if role =="principal":
 
     if principal.verify_login(user_id,password):
-        principal.dashboard()
         while True:
-            
+            principal.dashboard()
+        
+            while True:
+                try:
+                    choice=int(input("Enter you choice: "))
+                    if choice < 1 or choice > 6:
+                        print("Invalid choice..Enter choice between 1 to 6 ")
+                        continue
+                    break
+                except ValueError:
+                    print("Enter numbers only!")
 
-            choice=input("Enter you choice: ")
-
-            if choice =="1":
+            if choice ==1:
                 student_features.view_timetable(student.student_class)
-            elif choice == "2":
+            elif choice == 2:
                 student_id=input("enter student id: ")
                 student_features.view_marks(student_id)
-            elif choice == "3":
+            elif choice == 3:
                 student_id=input("enter student id: ")
                 student_features.view_attendance(student_id)
-            elif choice == "4":
+            elif choice == 4:
                 student_id=input("enter student id: ")
                 student_features.view_remarks(student_id)
-            elif choice == "5":
+            elif choice == 5:
                 teacher_features.view_timetable()
 
-            elif choice == "6":
+            elif choice == 6:
                 print("Logging out...")
                 break
 
@@ -56,33 +72,41 @@ if role =="principal":
 elif role=="teacher":
 
     if teacher.verify_login(user_id,password):
-        
-
         while True:
             teacher.dashboard()
-            
-            choice=input("Enter your choice: ")
+        
 
-            if choice=="1":
+            while True:
+                
+                try:
+                    choice=int(input("Enter your choice: "))
+                    if choice < 1 or choice > 5:
+                        print("Invalid choice..Enter choice again")
+                        continue
+                    break
+                except ValueError:
+                    print("Enter numbers only!")
+
+            if choice==1:
                 teacher_features.view_timetable()
 
-            elif choice=="2":
+            elif choice==2:
                 student_id=input("enter student id: ")
                 teacher_features.update_attendance(student_id)
 
-            elif choice=="3":
+            elif choice==3:
                 student_id=input("enter student id: ")
                 exam=input("enter the exam (Quaterly/Half-Yearly/Annual): ")
                 teacher_features.update_marks(student_id,exam)
 
-            elif choice=="4":
+            elif choice==4:
                 student_id=input("enter studend id: ")
                 teacher_features.update_remarks(student_id)
 
-            elif choice=="5":
+            elif choice==5:
                 print("Logging out....")
                 break
-    
+
 
         
     else:
@@ -91,31 +115,43 @@ elif role=="teacher":
 elif role=="student":
 
     if student.verify_login(user_id,password):
-        
 
         while True:
             student.dashboard()
-            choice=input("Enter your choice: ")
+        
 
-            if choice=="1":
+            while True:
+            
+                
+                try:
+                    choice=int(input("Enter your choice: "))
+                    if choice < 1 or choice > 5:
+                        print("Invalid choice..Enter choice again")
+                        continue
+                    break
+                except ValueError:
+                    print("Enter numbers only!")
+
+
+            if choice==1:
 
                 student_features.view_timetable(student.student_class)
 
-            elif choice == "2":
+            elif choice == 2:
                 
                 student_features.view_marks(student.user_id)
 
                 
 
-            elif choice == "3":
+            elif choice == 3:
 
                 student_features.view_attendance(student.user_id)
 
-            elif choice == "4":
+            elif choice == 4:
 
                 student_features.view_remarks(student.user_id)
 
-            elif choice == "5":
+            elif choice == 5:
 
                 print("Logging out...")
                 break
@@ -130,27 +166,38 @@ elif role=="student":
 elif role=="parent":
 
     if parent.verify_login(user_id,password):
-        while True:
 
+        while True:
             parent.dashboard()
 
-            choice = input("Enter your choice: ")
 
-            if choice=="1":
+            # while loop for input validation
+            while True:
+                try:
+                    choice=int(input("Enter your choice: "))
+                    if choice < 1 or choice > 4:
+                        print("Invalid choice..Enter choice again")
+                        continue
+                    break
+                except ValueError:
+                    print("Enter numbers only!")
+
+
+            if choice==1:
                 student_id=input("enter studend id: ")
                 parent.view_marks(parent.child_id)
-            elif choice=="2":
+            elif choice==2:
                 student_id=input("enter studend id: ")
                 parent.view_attendance(parent.child_id)
-            elif choice=="3":
+            elif choice==3:
                 student_id=input("enter studend id: ")
                 parent.view_remarks(parent.child_id)
 
-            elif choice=="4":
+            elif choice==4:
                 print("Logging out...")
                 break
 
-        
+            
 
 
     else:

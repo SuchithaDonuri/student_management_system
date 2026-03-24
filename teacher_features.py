@@ -47,7 +47,7 @@ class TeacherFeatures:
             break
 
         if student_id not in self.data.attendance:
-            self.attendance[student_id]={
+            self.data.attendance[student_id]={
                 "total_classes":0,
                 "attended":0
             }

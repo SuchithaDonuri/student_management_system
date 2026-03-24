@@ -6,5 +6,9 @@
     "S401": {
         "total_classes": 1,
         "attended": 1
+    },
+    "S302": {
+        "total_classes": 1,
+        "attended": 1
     }
 }
