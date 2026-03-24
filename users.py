@@ -1,4 +1,5 @@
 from student_features import Student_features
+from teacher_features import TeacherFeatures
 
 class User:
 
@@ -19,11 +20,23 @@ class Principal(User):
     def __init__(self, user_id, password):
         #role must always be "principal"
         super().__init__(user_id, password, "principal") # assigning the value principal to the role beacuse it is fixed for principal class
+        # Student_features.__init__(self)
+        # TeacherFeatures.__init__(self)
 
+
+    #Creating an object, Storing it inside another object (Principal),Principal has a Student_features
+        self.student_features=Student_features()
+        self.teacher_features=TeacherFeatures()
     def dashboard(self):
-        print("Principal Dashboard")
-        print("View student progress")
-        print("View teacher reports")
+        print("""
+                Principal Dashboard
+                1 View Student Timetable
+                2 View Student Marks
+                3 View Attendance
+                4 View Remarks
+                5 View Teacher Timetable
+                6 Logout
+                """)
 
 
 class Teacher(User):
@@ -32,12 +45,8 @@ class Teacher(User):
         super().__init__(user_id, password, "teacher")
 
     def dashboard(self):
-        print("""Teacher Dashboard\n
-        1 View Timetable
-        2 Mark Attendance
-        3 Update Marks
-        4 Update Remarks
-        5 Logout""")
+        print
+
 
 class Student(User):
 
@@ -55,11 +64,12 @@ class Student(User):
             5 Logout""")
 
 
-class Parent(User,Student_features):
+class Parent(User):
 
     def __init__(self, user_id, password,child_id):
         super().__init__(user_id, password, "parent")
-        Student_features.__init__(self)
+        self.student_features=Student_features()
+        
         self.child_id=child_id
 
 

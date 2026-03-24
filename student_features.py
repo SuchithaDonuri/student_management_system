@@ -1,9 +1,13 @@
 import json
+from utils.file_handling import save_data,load_data
+from utils.data_manager import DataManager
 
 
 
 
 
+
+DATA_PATH="data/"
 class Student_features:
 
     def __init__(self):
@@ -19,14 +23,21 @@ class Student_features:
             }
         }
 
-        with open("marks.json","r") as file:
-            self.marks=json.load(file)
+        # with open(DATA_PATH + "marks.json","r") as file:
+        #     self.marks=json.load(file)
 
-        with open("attendance.json","r") as file:
-            self.attendance=json.load(file)
+        # with open(DATA_PATH + "attendance.json","r") as file:
+        #     self.attendance=json.load(file)
 
-        with open("remarks.json","r") as file:
-            self.remarks=json.load(file)
+        # with open( DATA_PATH + "remarks.json","r") as file:
+        #     self.remarks=json.load(file)
+
+        # self.marks=load_data("marks.json")
+        # self.attendance=load_data("attendance.json")
+        # self.remarks=load_data("remarks.json")
+
+        # object of DataManager
+        self.data=DataManager()
 
     def view_timetable(self, student_class):
 
@@ -49,9 +60,9 @@ class Student_features:
 
         print("Student marks\n")
 
-        if student_id in self.marks:
+        if student_id in self.data.marks:
 
-            exams=self.marks[student_id]
+            exams=self.data.marks[student_id]
 
             for exam,subjects in exams.items():
                 print(exam + " Exam")
@@ -70,10 +81,10 @@ class Student_features:
 
         print("Student Attendance\n")
 
-        if student_id in self.attendance:
+        if student_id in self.data.attendance:
 
-            total=self.attendance[student_id]["total_classes"]
-            attended=self.attendance[student_id]["attended"]
+            total=self.data.attendance[student_id]["total_classes"]
+            attended=self.data.attendance[student_id]["attended"]
 
             percentage=(attended/total)*100
 
@@ -89,9 +100,9 @@ class Student_features:
         print("\nStudent Remarks\n")
 
 
-        if student_id in self.remarks:
+        if student_id in self.data.remarks:
 
-            print(self.remarks[student_id])
+            print(self.data.remarks[student_id])
         else:
 
             print("Remarks not available")

@@ -1,4 +1,7 @@
 import json
+# from student_features import DATA_PATH
+from utils.file_handling import load_data,save_data
+from utils.data_manager import DataManager
 
 
 
@@ -6,11 +9,15 @@ class TeacherFeatures:
 
     def __init__(self):
 
-        with open("marks.json","r") as file:
-            self.marks=json.load(file)
+        # with open(DATA_PATH + "marks.json","r") as file:
+        #     self.marks=json.load(file)
 
-        with open("attendance.json","r") as file:
-            self.attendance=json.load(file)
+        # with open(DATA_PATH + "attendance.json","r") as file:
+        #     self.attendance=json.load(file)
+
+        # self.marks=load_data("marks.json")
+        # self.attendance=load_data("attendance.json")
+        self.data=DataManager()
 
     def view_timetable(self):
 
@@ -32,19 +39,21 @@ class TeacherFeatures:
 
         status=input("enter the attendance (p/a): ")
 
-        if student_id not in self.attendance:
+        if student_id not in self.data.attendance:
             self.attendance[student_id]={
                 "total_classes":0,
                 "attended":0
             }
 
-        self.attendance[student_id]["total_classes"]+=1
+        self.data.attendance[student_id]["total_classes"]+=1
 
         if status.lower()=="p":
-            self.attendance[student_id]["attended"]+=1
+            self.data.attendance[student_id]["attended"]+=1
 
-        with open("attendance.json","w") as file:
-            json.dump(self.attendance,file,indent=4)
+        # with open(DATA_PATH + "attendance.json","w") as file:
+        #     json.dump(self.attendance,file,indent=4)
+
+        save_data("attendance.json",self.data.attendance)
 
         print("Attendance updated successfully")
 
@@ -63,13 +72,15 @@ class TeacherFeatures:
             mark=int(input(f"enter {subject} marks: "))
             subject_marks[subject]=mark
 
-        if student_id not in self.marks:
+        if student_id not in self.data.marks:
             self.marks[student_id]={}
 
         self.marks[student_id][exam]=subject_marks
 
-        with open("marks.json","w") as file:
-            json.dump(self.marks,file,indent=4)
+        # with open(DATA_PATH + "marks.json","w") as file:
+        #     json.dump(self.marks,file,indent=4)
+
+        save_data("marks.json",self.data.marks)
 
         print("Marks updated successfully")
 
@@ -77,14 +88,17 @@ class TeacherFeatures:
     def update_remarks(self,student_id):
         remark = input("Enter remark for student: ")
 
-        with open("remarks.json","r") as file:
+        # with open("remarks.json","r") as file:
 
-            remarks=json.load(file)
+        #     remarks=json.load(file)
+        self.data.remarks=load_data("remarks.json")
         
 
-        remarks[student_id]=remark
+        self.data.remarks[student_id]=remark
 
-        with open("remarks.json","w") as file:
-            json.dump(remarks,file,indent=4)
+        # with open(DATA_PATH + "remarks.json","w") as file:
+        #     json.dump(remarks,file,indent=4)
+
+        save_data("remarks.json",self.data.remarks)
         
         print("Remark updated successfully")

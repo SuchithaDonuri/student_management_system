@@ -10,7 +10,9 @@ teacher = Teacher("T201", "teach123")
 student = Student("S301", "stud123",7)
 parent = Parent("PA401", "parent123","S301")
 
-features=Student_features()
+
+#objects 
+student_features=Student_features()
 teacher_features=TeacherFeatures()
 
 
@@ -25,6 +27,28 @@ if role =="principal":
 
     if principal.verify_login(user_id,password):
         principal.dashboard()
+        while True:
+            
+
+            choice=input("Enter you choice: ")
+
+            if choice =="1":
+                student_features.view_timetable(student.student_class)
+            elif choice == "2":
+                student_id=input("enter student id: ")
+                student_features.view_marks(student_id)
+            elif choice == "3":
+                student_id=input("enter student id: ")
+                student_features.view_attendance(student_id)
+            elif choice == "4":
+                student_id=input("enter student id: ")
+                student_features.view_remarks(student_id)
+            elif choice == "5":
+                teacher_features.view_timetable()
+
+            elif choice == "6":
+                print("Logging out...")
+                break
 
     else:
         print("Invalid credentials for principal")
@@ -40,7 +64,7 @@ elif role=="teacher":
             if choice=="1":
                 teacher_features.view_timetable()
 
-            if choice=="2":
+            elif choice=="2":
                 student_id=input("enter student id: ")
                 teacher_features.update_attendance(student_id)
 
@@ -73,21 +97,21 @@ elif role=="student":
 
             if choice=="1":
 
-                features.view_timetable(student.student_class)
+                student_features.view_timetable(student.student_class)
 
             elif choice == "2":
                 
-                features.view_marks(student.user_id)
+                student_features.view_marks(student.user_id)
 
                 
 
             elif choice == "3":
 
-                features.view_attendance(student.user_id)
+                student_features.view_attendance(student.user_id)
 
             elif choice == "4":
 
-                features.view_remarks(student.user_id)
+                student_features.view_remarks(student.user_id)
 
             elif choice == "5":
 
