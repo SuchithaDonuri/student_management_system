@@ -45,7 +45,14 @@ class Teacher(User):
         super().__init__(user_id, password, "teacher")
 
     def dashboard(self):
-        print
+        print("""
+Teacher Dashboard
+1 View Timetable
+2 Mark Attendance
+3 Update Marks
+4 Update Remarks
+5 Logout
+""")
 
 
 class Student(User):

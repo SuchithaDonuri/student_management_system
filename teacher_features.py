@@ -37,7 +37,14 @@ class TeacherFeatures:
     
     def update_attendance(self,student_id):
 
-        status=input("enter the attendance (p/a): ")
+        while True:
+            status=input("enter the attendance (p/a): ")
+
+            if status not in ["p","a"]:
+                print("Invalid input! Enter only 'p' or 'a'")
+                continue
+
+            break
 
         if student_id not in self.data.attendance:
             self.attendance[student_id]={
@@ -50,10 +57,10 @@ class TeacherFeatures:
         if status.lower()=="p":
             self.data.attendance[student_id]["attended"]+=1
 
-        # with open(DATA_PATH + "attendance.json","w") as file:
-        #     json.dump(self.attendance,file,indent=4)
+            # with open(DATA_PATH + "attendance.json","w") as file:
+            #     json.dump(self.attendance,file,indent=4)
 
-        save_data("attendance.json",self.data.attendance)
+            self.data.save_all()
 
         print("Attendance updated successfully")
 
@@ -68,37 +75,60 @@ class TeacherFeatures:
         subject_marks={}
 
         for subject in subjects:
+            while True:
 
-            mark=int(input(f"enter {subject} marks: "))
+                try:
+
+                    mark=int(input(f"enter {subject} marks: "))
+                    if mark < 0 or mark > 100:
+                        print("Marks should be between 0 and 100")
+                        continue
+
+                    break
+                except ValueError:
+                    print("Invalid input! Enter a number.")
             subject_marks[subject]=mark
 
         if student_id not in self.data.marks:
-            self.marks[student_id]={}
+            self.data.marks[student_id]={}
 
-        self.marks[student_id][exam]=subject_marks
+        self.data.marks[student_id][exam]=subject_marks
 
         # with open(DATA_PATH + "marks.json","w") as file:
         #     json.dump(self.marks,file,indent=4)
 
-        save_data("marks.json",self.data.marks)
+        # Save using DataManager
+        self.data.save_all()
 
         print("Marks updated successfully")
 
 
     def update_remarks(self,student_id):
-        remark = input("Enter remark for student: ")
+
+
+        while True:
+            remark = input("Enter remark for student: ")
+
+            if remark == "":
+                print("Remark can not be empty")
+                continue
+            break
+
 
         # with open("remarks.json","r") as file:
 
         #     remarks=json.load(file)
-        self.data.remarks=load_data("remarks.json")
+        #self.data.load_data()
+        if student_id not in self.data.remarks:
+            self.data.remarks[student_id]=[]
+
         
 
-        self.data.remarks[student_id]=remark
-
+        self.data.remarks[student_id].append(remark)
+        
         # with open(DATA_PATH + "remarks.json","w") as file:
         #     json.dump(remarks,file,indent=4)
 
-        save_data("remarks.json",self.data.remarks)
+        self.data.save_all()
         
         print("Remark updated successfully")

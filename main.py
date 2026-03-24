@@ -56,9 +56,11 @@ if role =="principal":
 elif role=="teacher":
 
     if teacher.verify_login(user_id,password):
+        
 
         while True:
             teacher.dashboard()
+            
             choice=input("Enter your choice: ")
 
             if choice=="1":
