@@ -88,7 +88,7 @@ elif role=="teacher":
                     print("Enter numbers only!")
 
             if choice==1:
-                teacher_features.view_timetable()
+                teacher_features.view_timetable(teacher.user_id)
 
             elif choice==2:
                 student_id=input("enter student id: ")

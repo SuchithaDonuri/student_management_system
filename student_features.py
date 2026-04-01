@@ -1,27 +1,33 @@
 import json
 from utils.file_handling import save_data,load_data
 from utils.data_manager import DataManager
+import matplotlib.pyplot as plt
+def load_timetable():
+    with open("data/timetable.json","r") as file:
+        return json.load(file)
 
 
 
 
 
 
-DATA_PATH="data/"
+# DATA_PATH="data/"
 class Student_features:
 
     def __init__(self):
         
 
-        self.timetable={
-            7: {
-                "Monday": ["Math", "Physics", "English"],
-                "Tuesday": ["Chemistry", "Math", "Social"],
-                "Wednesday": ["Biology", "Math", "English"],
-                "Thursday": ["Physics", "Chemistry", "Math"],
-                "Friday": ["English", "Social", "Math"]
-            }
-        }
+        # self.timetable={
+        #     7: {
+        #         "Monday": ["Math", "Physics", "English"],
+        #         "Tuesday": ["Chemistry", "Math", "Social"],
+        #         "Wednesday": ["Biology", "Math", "English"],
+        #         "Thursday": ["Physics", "Chemistry", "Math"],
+        #         "Friday": ["English", "Social", "Math"]
+        #     }
+        # }
+
+       
 
         # with open(DATA_PATH + "marks.json","r") as file:
         #     self.marks=json.load(file)
@@ -41,18 +47,34 @@ class Student_features:
 
     def view_timetable(self, student_class):
 
-        print("Student Timetable\n")
+        data = load_timetable()
+        timetable = data["students"].get(str(student_class), {})
 
-
-        if student_class in self.timetable:
-
-            for day, subjects in self.timetable[student_class].items():
-
-                print(day, ":", ", ".join(subjects))
-            print()
-
-        else:
+        if not timetable:
             print("Timetable not available")
+            return
+
+        days = list(timetable.keys())
+        periods = len(timetable[days[0]])
+
+        table_data = [["Day"] + [f"P{i+1}" for i in range(periods)]]
+
+        for day in days:
+            table_data.append([day] + timetable[day])
+
+        import matplotlib.pyplot as plt
+        fig, ax = plt.subplots()
+        ax.axis('off')
+
+        table = ax.table(cellText=table_data, loc='center', cellLoc='center')
+        table.scale(1, 2)
+
+        plt.title(f"Class {student_class} Timetable")
+        plt.show()
+        
+        
+
+
 
 
 

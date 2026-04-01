@@ -2,6 +2,10 @@ import json
 # from student_features import DATA_PATH
 from utils.file_handling import load_data,save_data
 from utils.data_manager import DataManager
+def load_timetable():
+    import json
+    with open("data/timetable.json", "r") as file:
+        return json.load(file)
 
 
 
@@ -19,21 +23,34 @@ class TeacherFeatures:
         # self.attendance=load_data("attendance.json")
         self.data=DataManager()
 
-    def view_timetable(self):
+    def view_timetable(self, teacher_id):
 
-        timetable={
+        data = load_timetable()
+        timetable = data["teachers"].get(teacher_id, {})
 
-        "Monday": ["Class 7 - Math"],
-        "Tuesday": ["Class 7 - Physics"],
-        "Wednesday": ["Class 7 - Math"],
-        "Thursday": ["Class 7 - Physics"],
-        "Friday": ["Class 7 - Math"]
+        if not timetable:
+            print("No timetable found")
+            return
 
-        }
+        days = list(timetable.keys())
+        max_periods = max(len(v) for v in timetable.values())
 
-        for day,classes in timetable.items():
-            print(day, ":", ", ".join(classes))
+        table_data = [["Day"] + [f"P{i+1}" for i in range(max_periods)]]
 
+        for day in days:
+            row = timetable[day]
+            row += [""] * (max_periods - len(row))
+            table_data.append([day] + row)
+
+        import matplotlib.pyplot as plt
+        fig, ax = plt.subplots()
+        ax.axis('off')
+
+        table = ax.table(cellText=table_data, loc='center', cellLoc='center')
+        table.scale(1, 2)
+
+        plt.title(f"Teacher {teacher_id} Timetable")
+        plt.show()
     
     def update_attendance(self,student_id):
 
