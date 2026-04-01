@@ -60,7 +60,7 @@ if role =="principal":
                 student_id=input("enter student id: ")
                 student_features.view_remarks(student_id)
             elif choice == 5:
-                teacher_features.view_timetable()
+                teacher_features.view_timetable(teacher.user_id)
 
             elif choice == 6:
                 print("Logging out...")

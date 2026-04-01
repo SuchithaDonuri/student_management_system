@@ -26,7 +26,7 @@ class TeacherFeatures:
     def view_timetable(self, teacher_id):
 
         data = load_timetable()
-        timetable = data["teachers"].get(teacher_id, {})
+        timetable = self.data.timetable["teachers"].get(teacher_id, {})
 
         if not timetable:
             print("No timetable found")

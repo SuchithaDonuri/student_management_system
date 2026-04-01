@@ -2,9 +2,11 @@ import json
 from utils.file_handling import save_data,load_data
 from utils.data_manager import DataManager
 import matplotlib.pyplot as plt
-def load_timetable():
-    with open("data/timetable.json","r") as file:
-        return json.load(file)
+
+
+# def load_timetable():
+#     with open("data/timetable.json","r") as file:
+#         return json.load(file)
 
 
 
@@ -47,8 +49,8 @@ class Student_features:
 
     def view_timetable(self, student_class):
 
-        data = load_timetable()
-        timetable = data["students"].get(str(student_class), {})
+        #data= load_timetable()
+        timetable = self.data.timetable.get("students", {}).get(str(student_class), {})
 
         if not timetable:
             print("Timetable not available")
@@ -120,11 +122,14 @@ class Student_features:
 
     def view_remarks(self,student_id):
         print("\nStudent Remarks\n")
-
-
         if student_id in self.data.remarks:
+            remarks=self.data.remarks[student_id]
 
-            print(self.data.remarks[student_id])
+            if not remarks:
+                print("No remarks available.")
+            else:
+                for i,remark in enumerate(remarks,start=1):
+                    print(f"{i}. {remark}")
         else:
 
             print("Remarks not available")
