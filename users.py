@@ -48,10 +48,12 @@ class Teacher(User):
         print("""
 Teacher Dashboard
 1 View Timetable
-2 Mark Attendance
-3 Update Marks
-4 Update Remarks
-5 Logout
+2 Update Timetable
+3 Delete Timetable
+4 Mark Attendance
+5 Update Marks
+6 Update Remarks
+7 Logout
 """)
 
 

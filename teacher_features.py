@@ -25,7 +25,7 @@ class TeacherFeatures:
 
     def view_timetable(self, teacher_id):
 
-        data = load_timetable()
+        
         timetable = self.data.timetable["teachers"].get(teacher_id, {})
 
         if not timetable:
@@ -51,8 +51,58 @@ class TeacherFeatures:
 
         plt.title(f"Teacher {teacher_id} Timetable")
         plt.show()
+
+
+    def update_timetable(self,teacher_id):
+        day=input("Enter day: ").capitalize()
+        subjects=input("Enter subjects (comma separated): ").split(",")
+        subjects=[s.strip() for s in subjects if s.strip()]
+
+        if not subjects:
+            print("Subjects can not be empty..")
+            return
+        
+        if "teachers" not in self.data.timetable:
+            self.data.timetable["teachers"]={}
+
+        if teacher_id not in self.data.timetable["teachers"] or not isinstance(self.data.timetable["teachers"][teacher_id], dict):
+            self.data.timetable["teachers"][teacher_id] = {}
+            
+
+        self.data.timetable["teachers"][teacher_id][day]=subjects
+        print(self.data.timetable)
+
+        self.data.save_all()
+
+        print("\nTimetable updated successfully!\n")
+
+
+    def delete_timetable(self,teacher_id):
+        day = input("Enter day to delete: ").capitalize()
+
+        teacher_tt=self.data.timetable.get("teachers",{}).get("teacher_id",{})
+
+        if not teacher_tt:
+            print("No timetable found")
+            return
+        
+        if day in teacher_tt:
+            del teacher_tt[day]
+
+            self.data.save_all()
+
+            print("\nDay deleted successfully!\n")
+
+        else:
+            print("Day not found")
+    
+    
+
+
+
     
     def update_attendance(self,student_id):
+        
 
         while True:
             status=input("enter the attendance (p/a): ")
@@ -77,7 +127,7 @@ class TeacherFeatures:
             # with open(DATA_PATH + "attendance.json","w") as file:
             #     json.dump(self.attendance,file,indent=4)
 
-            self.data.save_all()
+        self.data.save_all()
 
         print("Attendance updated successfully")
 

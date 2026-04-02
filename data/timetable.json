@@ -1,20 +1,46 @@
 {
     "students": {
-      "7": {
-        "Monday": ["Math", "Physics", "English"],
-        "Tuesday": ["Chemistry", "Math", "Social"],
-        "Wednesday": ["Biology", "Math", "English"],
-        "Thursday": ["Physics", "Chemistry", "Math"],
-        "Friday": ["English", "Social", "Math"]
-      }
+        "7": {
+            "Monday": [
+                "Math",
+                "Physics",
+                "English"
+            ],
+            "Tuesday": [
+                "Chemistry",
+                "Math",
+                "Social"
+            ],
+            "Wednesday": [
+                "Biology",
+                "Math",
+                "English"
+            ],
+            "Thursday": [
+                "Physics",
+                "Chemistry",
+                "Math"
+            ],
+            "Friday": [
+                "English",
+                "Social",
+                "Math"
+            ]
+        }
     },
     "teachers": {
-      "T201": {
-        "Monday": ["Class 7 - Math"],
-        "Tuesday": ["Class 7 - Physics"],
-        "Wednesday": ["Class 7 - Math"],
-        "Thursday": ["Class 7 - Physics"],
-        "Friday": ["Class 7 - Math"]
-      }
+        "T201": {
+            "monday": [
+                "english",
+                ""
+            ],
+            "tuesday": [
+                "friday",
+                "saturday"
+            ],
+            "Wednesday": [
+                "maths"
+            ]
+        }
     }
-  }
+}

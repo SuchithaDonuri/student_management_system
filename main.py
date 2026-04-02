@@ -74,13 +74,11 @@ elif role=="teacher":
     if teacher.verify_login(user_id,password):
         while True:
             teacher.dashboard()
-        
-
             while True:
                 
                 try:
                     choice=int(input("Enter your choice: "))
-                    if choice < 1 or choice > 5:
+                    if choice < 1 or choice > 7:
                         print("Invalid choice..Enter choice again")
                         continue
                     break
@@ -90,20 +88,26 @@ elif role=="teacher":
             if choice==1:
                 teacher_features.view_timetable(teacher.user_id)
 
-            elif choice==2:
+            elif choice == 2:
+                teacher_features.update_timetable(teacher.user_id)
+
+            elif choice == 3:
+                teacher_features.delete_timetable(teacher.user_id)
+
+            elif choice==4:
                 student_id=input("enter student id: ")
                 teacher_features.update_attendance(student_id)
 
-            elif choice==3:
+            elif choice==5:
                 student_id=input("enter student id: ")
                 exam=input("enter the exam (Quaterly/Half-Yearly/Annual): ")
                 teacher_features.update_marks(student_id,exam)
 
-            elif choice==4:
+            elif choice==6:
                 student_id=input("enter studend id: ")
                 teacher_features.update_remarks(student_id)
 
-            elif choice==5:
+            elif choice==7:
                 print("Logging out....")
                 break
 
@@ -185,13 +189,13 @@ elif role=="parent":
 
             if choice==1:
                 student_id=input("enter studend id: ")
-                parent.view_marks(parent.child_id)
+                student_features.view_marks(parent.child_id)
             elif choice==2:
                 student_id=input("enter studend id: ")
-                parent.view_attendance(parent.child_id)
+                student_features.view_attendance(parent.child_id)
             elif choice==3:
                 student_id=input("enter studend id: ")
-                parent.view_remarks(parent.child_id)
+                student_features.view_remarks(parent.child_id)
 
             elif choice==4:
                 print("Logging out...")
