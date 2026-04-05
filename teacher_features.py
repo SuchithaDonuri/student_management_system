@@ -2,10 +2,13 @@ import json
 # from student_features import DATA_PATH
 from utils.file_handling import load_data,save_data
 from utils.data_manager import DataManager
-def load_timetable():
-    import json
-    with open("data/timetable.json", "r") as file:
-        return json.load(file)
+import matplotlib.pyplot as plt
+import pandas as pd
+
+# def load_timetable():
+#     import json
+#     with open("data/timetable.json", "r") as file:
+#         return json.load(file)
 
 
 
@@ -23,80 +26,148 @@ class TeacherFeatures:
         # self.attendance=load_data("attendance.json")
         self.data=DataManager()
 
-    def view_timetable(self, teacher_id):
+    def view_timetable(self, class_section):
 
-        
-        timetable = self.data.timetable["teachers"].get(teacher_id, {})
+        timetable = self.data.timetable.get(class_section)
 
         if not timetable:
             print("No timetable found")
             return
 
-        days = list(timetable.keys())
-        max_periods = max(len(v) for v in timetable.values())
+        teachers = self.data.teachers
 
-        table_data = [["Day"] + [f"P{i+1}" for i in range(max_periods)]]
+        days = list(timetable.keys())
+
+        # find max periods
+        max_periods = max(len(timetable[day]) for day in days)
+
+        table_data = []
 
         for day in days:
-            row = timetable[day]
-            row += [""] * (max_periods - len(row))
+            row = []
+
+            for entry in timetable[day]:
+                subject = entry["subject"]
+                teacher_id = entry["teacher_id"]
+
+                # get teacher name
+                teacher_name = teachers.get(teacher_id, {}).get("name", teacher_id)
+
+                row.append(f"{subject}\n({teacher_name})")
+
+            # fill empty cells
+            while len(row) < max_periods:
+                row.append("")
+
             table_data.append([day] + row)
 
-        import matplotlib.pyplot as plt
+        # column headers
+        columns = ["Day"] + [f"P{i+1}" for i in range(max_periods)]
+
+        df = pd.DataFrame(table_data, columns=columns)
+
+        # display using matplotlib
         fig, ax = plt.subplots()
         ax.axis('off')
 
-        table = ax.table(cellText=table_data, loc='center', cellLoc='center')
+        table = ax.table(
+            cellText=df.values,
+            colLabels=df.columns,
+            loc='center',
+            cellLoc='center'
+        )
+
         table.scale(1, 2)
-
-        plt.title(f"Teacher {teacher_id} Timetable")
+        plt.title(f"Timetable - {class_section}")
         plt.show()
+    def update_timetable(self, class_section):
 
+        timetable = self.data.timetable.get(class_section)
 
-    def update_timetable(self,teacher_id):
-        day=input("Enter day: ").capitalize()
-        subjects=input("Enter subjects (comma separated): ").split(",")
-        subjects=[s.strip() for s in subjects if s.strip()]
-
-        if not subjects:
-            print("Subjects can not be empty..")
+        if not timetable:
+            print("Timetable not available")
             return
-        
-        if "teachers" not in self.data.timetable:
-            self.data.timetable["teachers"]={}
 
-        if teacher_id not in self.data.timetable["teachers"] or not isinstance(self.data.timetable["teachers"][teacher_id], dict):
-            self.data.timetable["teachers"][teacher_id] = {}
-            
+        print("\nAvailable Days:")
+        for day in timetable:
+            print("-", day)
 
-        self.data.timetable["teachers"][teacher_id][day]=subjects
-        print(self.data.timetable)
+        day = input("Enter day to update: ").capitalize()
+
+        if day not in timetable:
+            print("Invalid day")
+            return
+
+        print("\nCurrent Periods:")
+        for i, entry in enumerate(timetable[day], start=1):
+            print(f"{i}. {entry['subject']} ({entry['teacher_id']})")
+
+        # SAFE INPUT
+        while True:
+            try:
+                period_index = int(input("Enter period number to change: ")) - 1
+                if period_index < 0 or period_index >= len(timetable[day]):
+                    print("Invalid period number!")
+                    continue
+                break
+            except ValueError:
+                print("Enter a number only!")
+
+        new_subject = input("Enter new subject: ")
+        new_teacher_id = input("Enter teacher ID: ")
+
+        timetable[day][period_index] = {
+            "subject": new_subject,
+            "teacher_id": new_teacher_id
+        }
 
         self.data.save_all()
 
-        print("\nTimetable updated successfully!\n")
+        print("Timetable updated successfully!")
 
+    def delete_timetable(self, class_section):
 
-    def delete_timetable(self,teacher_id):
-        day = input("Enter day to delete: ").capitalize()
+        timetable = self.data.timetable.get(class_section)
 
-        teacher_tt=self.data.timetable.get("teachers",{}).get("teacher_id",{})
-
-        if not teacher_tt:
+        if not timetable:
             print("No timetable found")
             return
+
+        print("\nAvailable Days:")
+        for day in timetable:
+            print("-", day)
+
+        day = input("Enter day: ").capitalize()
+
+        if day not in timetable:
+            print("Invalid day")
+            return
+
+        # Show periods
+        print("\nCurrent Periods:")
+        for i, entry in enumerate(timetable[day], start=1):
+            print(f"{i}. {entry['subject']} ({entry['teacher_id']})")
+
+        # Safe input
+        while True:
+            try:
+                period_index = int(input("Enter period number to delete: ")) - 1
+
+                if period_index < 0 or period_index >= len(timetable[day]):
+                    print("Invalid period number!")
+                    continue
+
+                break
+            except ValueError:
+                print("Enter a number only!")
+
+        # Delete specific period
+        removed = timetable[day].pop(period_index)
+
+        self.data.save_all()
+
+        print(f"Deleted: {removed['subject']} successfully!")
         
-        if day in teacher_tt:
-            del teacher_tt[day]
-
-            self.data.save_all()
-
-            print("\nDay deleted successfully!\n")
-
-        else:
-            print("Day not found")
-    
-    
 
 
 

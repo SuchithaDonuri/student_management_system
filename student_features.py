@@ -46,40 +46,54 @@ class Student_features:
 
         # object of DataManager
         self.data=DataManager()
+    def view_timetable(self, class_section):
 
-    def view_timetable(self, student_class):
-
-        #data= load_timetable()
-        timetable = self.data.timetable.get("students", {}).get(str(student_class), {})
+        timetable = self.data.timetable.get(class_section)
 
         if not timetable:
             print("Timetable not available")
             return
 
+        teachers = self.data.teachers
+
         days = list(timetable.keys())
-        periods = len(timetable[days[0]])
+        max_periods = max(len(p) for p in timetable.values())
 
-        table_data = [["Day"] + [f"P{i+1}" for i in range(periods)]]
+        # Header
+        table_data = [["Day"] + [f"P{i+1}" for i in range(max_periods)]]
 
+        # Rows
         for day in days:
-            table_data.append([day] + timetable[day])
+            row = [day]
 
-        import matplotlib.pyplot as plt
-        fig, ax = plt.subplots()
+            for entry in timetable[day]:
+                subject = entry["subject"]
+                teacher_id = entry["teacher_id"]
+
+                teacher_name = teachers.get(teacher_id, {}).get("name", "")
+
+                row.append(f"{subject}\n({teacher_name})")
+
+            # Fill empty cells if any
+            while len(row) < max_periods + 1:
+                row.append("")
+
+            table_data.append(row)
+
+        # Plot table
+        fig, ax = plt.subplots(figsize=(10, 5))
         ax.axis('off')
 
-        table = ax.table(cellText=table_data, loc='center', cellLoc='center')
+        table = ax.table(
+            cellText=table_data,
+            loc='center',
+            cellLoc='center'
+        )
+
         table.scale(1, 2)
 
-        plt.title(f"Class {student_class} Timetable")
+        plt.title(f"Timetable - {class_section}")
         plt.show()
-        
-        
-
-
-
-
-
     def view_marks(self,student_id):
 
         print("Student marks\n")
@@ -101,23 +115,78 @@ class Student_features:
             print("marks not available")
 
     
-    def view_attendance(self,student_id):
+    def compare_attendance(self):
 
-        print("Student Attendance\n")
+        import matplotlib.pyplot as plt
+
+        students = []
+        percentages = []
+
+        for student_id, data in self.data.attendance.items():
+            total = data["total_classes"]
+            attended = data["attended"]
+
+            if total > 0:
+                percent = (attended / total) * 100
+            else:
+                percent = 0
+
+            students.append(student_id)
+            percentages.append(percent)
+
+        plt.figure()
+        plt.bar(students, percentages)
+        plt.title("Attendance Comparison")
+        plt.xlabel("Students")
+        plt.ylabel("Percentage")
+        plt.show()
+    
+    def view_attendance(self, student_id):
+
+        print("\nStudent Attendance\n")
 
         if student_id in self.data.attendance:
 
-            total=self.data.attendance[student_id]["total_classes"]
-            attended=self.data.attendance[student_id]["attended"]
+            total = self.data.attendance[student_id]["total_classes"]
+            attended = self.data.attendance[student_id]["attended"]
+            absent = total - attended
 
-            percentage=(attended/total)*100
+            percentage = (attended / total) * 100 if total > 0 else 0
 
             print("Total Classes :", total)
             print("Attended      :", attended)
+            print("Absent        :", absent)
             print("Percentage    :", round(percentage, 2), "%")
 
-        else:
+            import matplotlib.pyplot as plt
 
+            # Data
+            labels = ["Present", "Absent"]
+            values = [attended, absent]
+
+            # Pie chart
+            plt.figure()
+            wedges, texts, autotexts = plt.pie(
+                values,
+                labels=labels,
+                autopct='%1.1f%%',
+                startangle=90
+            )
+
+            # Add legend (explains colors clearly)
+            plt.legend(
+                wedges,
+                [f"Present ({attended})", f"Absent ({absent})"],
+                title="Attendance",
+                loc="best",
+                bbox_to_anchor=(0.5,1.15)
+            )
+
+            plt.title(f"Attendance Distribution - {student_id}")
+
+            plt.show()
+
+        else:
             print("Attendance data not available")
 
     def view_remarks(self,student_id):

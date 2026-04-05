@@ -1,6 +1,6 @@
 {
     "S301": {
-        "total_classes": 127,
+        "total_classes": 128,
         "attended": 115
     },
     "S401": {
@@ -8,7 +8,7 @@
         "attended": 1
     },
     "S302": {
-        "total_classes": 1,
+        "total_classes": 100,
         "attended": 1
     }
 }

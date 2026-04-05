@@ -1,13 +1,14 @@
 from users import Principal,Teacher,Student,Parent
 from student_features import *
 from teacher_features import *
+from utils.data_manager import DataManager
 
 
-
+data=DataManager()
 
 principal = Principal("P101", "admin123")
-teacher = Teacher("T201", "teach123")
-student = Student("S301", "stud123",7)
+# teacher = Teacher()
+# student = Student("S301", "stud123",7)
 parent = Parent("PA401", "parent123","S301")
 
 
@@ -49,7 +50,15 @@ if role =="principal":
                     print("Enter numbers only!")
 
             if choice ==1:
-                student_features.view_timetable(student.student_class)
+                class_section = input("Enter class_section (e.g., 6_A): ").strip().replace(" ", "")
+                if class_section not in data.timetable:
+                    print("No timetable found for this class/section")
+                else:
+                    student_features.view_timetable(class_section)
+
+                
+                
+                
             elif choice == 2:
                 student_id=input("enter student id: ")
                 student_features.view_marks(student_id)
@@ -60,7 +69,11 @@ if role =="principal":
                 student_id=input("enter student id: ")
                 student_features.view_remarks(student_id)
             elif choice == 5:
-                teacher_features.view_timetable(teacher.user_id)
+                class_section = input("Enter class_section (e.g., 6_A): ").strip().replace(" ", "")
+                if class_section not in data.timetable:
+                    print("No timetable found for this class/section")
+                else:
+                    teacher_features.view_timetable(class_section)
 
             elif choice == 6:
                 print("Logging out...")
@@ -71,7 +84,11 @@ if role =="principal":
 
 elif role=="teacher":
 
-    if teacher.verify_login(user_id,password):
+
+    teachers=data.teachers.get(user_id)
+    if teachers and teachers["password"] == password:
+        teacher=Teacher(user_id,teachers["password"], teachers["teacher_type"],teachers["name"],teachers["subject"])        
+
         while True:
             teacher.dashboard()
             while True:
@@ -86,13 +103,17 @@ elif role=="teacher":
                     print("Enter numbers only!")
 
             if choice==1:
-                teacher_features.view_timetable(teacher.user_id)
+               
+                class_section = input("Enter class_section (e.g., 6_A): ").strip()
+                teacher_features.view_timetable(class_section)
 
             elif choice == 2:
-                teacher_features.update_timetable(teacher.user_id)
+                class_section = input("Enter class_section (e.g., 6_A): ").strip().replace(" ", "")
+                teacher_features.update_timetable(class_section)
 
             elif choice == 3:
-                teacher_features.delete_timetable(teacher.user_id)
+                class_section = input("Enter class_section (e.g., 6_A): ").strip().replace(" ", "")
+                teacher_features.delete_timetable(class_section)
 
             elif choice==4:
                 student_id=input("enter student id: ")
@@ -117,16 +138,19 @@ elif role=="teacher":
         print("Invalid teacher credentials")
 
 elif role=="student":
+    student_data=data.validate_student(user_id,password)
 
-    if student.verify_login(user_id,password):
+    if student_data:
+        student=Student(user_id,student_data["class"],student_data["section"],student_data["name"])
+        print(f""" =============== WELCOME {student.name} ================
+Roll No : {student.user_id}
+Class   : {student.student_class} (Section {student.section})
+You are successfully logged in.""")
 
         while True:
             student.dashboard()
-        
 
             while True:
-            
-                
                 try:
                     choice=int(input("Enter your choice: "))
                     if choice < 1 or choice > 5:
@@ -135,37 +159,24 @@ elif role=="student":
                     break
                 except ValueError:
                     print("Enter numbers only!")
-
-
-            if choice==1:
-
-                student_features.view_timetable(student.student_class)
-
+            if choice == 1:
+                key=student.get_class_section_key()
+                student_features.view_timetable(key)
             elif choice == 2:
-                
                 student_features.view_marks(student.user_id)
-
-                
-
             elif choice == 3:
-
                 student_features.view_attendance(student.user_id)
-
             elif choice == 4:
-
                 student_features.view_remarks(student.user_id)
 
             elif choice == 5:
-
                 print("Logging out...")
                 break
-
-            else:
-
-                print("Invalid choice")
-
     else:
         print("Invalid student credentials")
+
+
+
 
 elif role=="parent":
 
@@ -189,13 +200,13 @@ elif role=="parent":
 
             if choice==1:
                 student_id=input("enter studend id: ")
-                student_features.view_marks(parent.child_id)
+                student_features.view_marks(student_id)
             elif choice==2:
                 student_id=input("enter studend id: ")
-                student_features.view_attendance(parent.child_id)
+                student_features.view_attendance(student_id)
             elif choice==3:
                 student_id=input("enter studend id: ")
-                student_features.view_remarks(parent.child_id)
+                student_features.view_remarks(student_id)
 
             elif choice==4:
                 print("Logging out...")

@@ -1,6 +1,7 @@
 from student_features import Student_features
 from teacher_features import TeacherFeatures
 
+
 class User:
 
     def __init__(self,user_id,password,role):
@@ -41,27 +42,47 @@ class Principal(User):
 
 class Teacher(User):
 
-    def __init__(self, user_id, password):
+    def __init__(self, user_id, password,teacher_type,name,subject):
         super().__init__(user_id, password, "teacher")
+        self.teacher_type=teacher_type
+        self.name=name
+        self.subject=subject
+        
 
     def dashboard(self):
-        print("""
-Teacher Dashboard
+        if self.teacher_type=="teaching":
+
+            print(f"""
+    Welcome {self.name} ({self.subject} Teacher)
+    Teacher Dashboard
+    1 View Timetable
+    2 Update Timetable
+    3 Delete Timetable
+    4 Mark Attendance
+    5 Update Marks
+    6 Update Remarks
+    7 Logout
+    """)
+        else:
+            print(f"""
+Welcome {self.name} (Non-Teaching Staff)
 1 View Timetable
 2 Update Timetable
 3 Delete Timetable
-4 Mark Attendance
-5 Update Marks
-6 Update Remarks
-7 Logout
+4 Logout
 """)
 
 
 class Student(User):
 
-    def __init__(self, user_id, password,student_class):
-        super().__init__(user_id, password, "student")
+    def __init__(self, user_id,student_class,section,name):
+        super().__init__(user_id, None, "student")
         self.student_class=student_class
+        self.section=section
+        self.name=name
+
+    def get_class_section_key(self):
+        return f"{self.student_class}_{self.section}"
 
     def dashboard(self):
 
